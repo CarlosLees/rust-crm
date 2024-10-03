@@ -6,6 +6,6 @@ fn main() -> Result<()> {
     let config = tonic_build::configure();
     config
         .out_dir("src/pb")
-        .compile_protos(&["../protos/crm.proto"], &["../protos"])?;
+        .compile_protos(&["../protos/crm/crm.proto"], &["../protos/crm"])?;
     Ok(())
 }
