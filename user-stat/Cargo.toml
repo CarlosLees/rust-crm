@@ -15,12 +15,13 @@ chrono = { workspace = true }
 rand = { workspace = true }
 fake = { workspace = true }
 nanoid = { workspace = true }
+derive_builder = { workspace = true }
+futures = { workspace = true }
 
 [build-dependencies]
 anyhow = { workspace = true }
-prost-build = { workspace = true }
-proto-builder-trait = "0.6.1"
 tonic-build = { workspace = true }
+proto-builder-trait = { workspace = true }
 
 [dev-dependencies]
 regex = "1.11.0"

@@ -1,15 +1,45 @@
+use anyhow::Result;
+use proto_builder_trait::tonic::BuilderAttributes;
 use std::fs;
 
-use anyhow::Result;
 fn main() -> Result<()> {
     fs::create_dir_all("src/pb")?;
-    let config = tonic_build::configure();
-    config.out_dir("src/pb").compile_protos(
-        &[
-            "../protos/user_stats/messages.proto",
-            "../protos/user_stats/rpc.proto",
-        ],
-        &["../protos/user_stats"],
-    )?;
+    let builder = tonic_build::configure();
+
+    builder
+        .out_dir("src/pb")
+        .with_serde(
+            &["User"],
+            true,
+            true,
+            Some(&[r#"#[serde(rename_all = "camelCase")]"#]),
+        )
+        .with_sqlx_from_row(&["User"], None)
+        .with_derive_builder(
+            &[
+                "User",
+                "QueryRequest",
+                "RawQueryRequest",
+                "TimeQuery",
+                "IdQuery",
+            ],
+            None,
+        )
+        .with_field_attributes(
+            &["User.email", "User.name", "RawQueryRequest.query"],
+            &[r#"#[builder(setter(into))]"#],
+        )
+        .with_field_attributes(
+            &["TimeQuery.before", "TimeQuery.after"],
+            &[r#"#[builder(setter(into, strip_option))]"#],
+        )
+        .compile(
+            &[
+                "../protos/user_stats/messages.proto",
+                "../protos/user_stats/rpc.proto",
+            ],
+            &["../protos"],
+        )
+        .unwrap();
     Ok(())
 }
