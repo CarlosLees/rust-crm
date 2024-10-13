@@ -1,5 +1,6 @@
 use std::pin::Pin;
 
+mod abi;
 pub mod pb;
 
 use futures::Stream;
